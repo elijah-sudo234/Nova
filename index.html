@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nova</title>
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fafaff;--surface:#f0effa;--ink:#16141f;--muted:#6a6779;--line:#e2e0f0;--accent:#5b3df5;--accent-ink:#fff;--link:#3d2bc4}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e0d14;--surface:#1a1824;--ink:#eceaf5;--muted:#9a97ad;--line:#2b2839;--accent:#8b7bff;--accent-ink:#0e0d14;--link:#a99dff}}
+:root[data-theme="dark"]{--bg:#0e0d14;--surface:#1a1824;--ink:#eceaf5;--muted:#9a97ad;--line:#2b2839;--accent:#8b7bff;--accent-ink:#0e0d14;--link:#a99dff}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:var(--bg);color:var(--ink);font-family:'DM Sans',system-ui,sans-serif;font-size:16px;line-height:1.5}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.top{display:flex;justify-content:flex-end;gap:8px;padding:12px 16px}
+.chip{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:14px}
+.chip.main{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:500}
+.head{max-width:760px;margin:0 auto;padding:0 16px}
+.brand{font-family:Syne,sans-serif;font-weight:800;letter-spacing:-.04em;line-height:1;margin:0;cursor:pointer;display:flex;align-items:center;gap:.25em}
+.brand span:nth-child(1){color:#5ec8ff}.brand span:nth-child(2){color:#ffc926}.brand span:nth-child(3){color:#34c759}.brand span:nth-child(4){color:#ea4335}
+.bar{display:flex;align-items:center;background:var(--surface);border:1.5px solid var(--line);border-radius:999px;padding:4px 4px 4px 18px;flex:1}
+.bar:focus-within{border-color:var(--accent)}
+.bar input{flex:1;min-width:0;border:0;background:none;outline:0;padding:10px 0;font-size:17px}
+.bar button{background:var(--accent);color:var(--accent-ink);border:0;border-radius:999px;padding:10px 18px;font-weight:500}
+.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding:12px 0 0}
+.tabs button{background:none;border:0;border-bottom:2.5px solid transparent;padding:8px 12px;color:var(--muted);white-space:nowrap}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent);font-weight:500}
+body.home .head{display:flex;flex-direction:column;align-items:center;margin-top:12vh}
+body.home .brand{font-size:clamp(64px,20vw,104px);margin-bottom:24px}
+body.home .row{width:100%}
+body.home .tabs{justify-content:center;flex-wrap:wrap;overflow:visible}
+body:not(.home) .row{display:flex;align-items:center;gap:16px}
+body:not(.home) .brand{font-size:28px}
+body:not(.home) .tabs{border-bottom:1px solid var(--line)}
+body.home main{display:none}
+body.home{min-height:100vh;background:linear-gradient(rgba(0,0,0,.35),rgba(0,0,0,.5)),var(--photo,#1b1830) center/cover fixed no-repeat}
+body.home .brand{text-shadow:0 2px 18px rgba(0,0,0,.45)}
+body.home .tabs button{color:#fff;opacity:.85}
+body.home .tabs button[aria-selected="true"]{opacity:1;border-bottom-color:#fff}
+main{max-width:760px;margin:0 auto;padding:16px 16px 64px}
+.meta{color:var(--muted);font-size:14px;margin:0 0 16px}
+.res{margin:0 0 22px}
+.res .u{font-size:13px;color:var(--muted);word-break:break-all}
+.res a.t{display:block;font-size:19px;color:var(--link);text-decoration:none;font-weight:500;line-height:1.3;margin:2px 0}
+.res a.t:hover{text-decoration:underline}
+.res p{margin:2px 0 0;color:var(--ink);opacity:.85}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.card{display:block;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;text-decoration:none;color:inherit}
+.card img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:var(--line)}
+.card div{padding:8px 10px;font-size:14px}
+.card small{display:block;color:var(--muted)}
+.item{display:flex;gap:12px;margin:0 0 18px}
+.item img{width:96px;height:72px;object-fit:cover;border-radius:10px;flex:none;background:var(--line)}
+.msg{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
+dialog{background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:16px;padding:20px;width:min(92vw,380px)}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+dialog input{width:100%;margin:10px 0;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+dialog .acts{display:flex;gap:8px;justify-content:flex-end}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s}
+#toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body class="home">
+<div class="top">
+  <button class="chip" id="themeBtn" aria-label="Switch light or dark mode">Theme</button>
+  <button class="chip" id="keyBtn">Access</button>
+  <button class="chip main" id="signBtn">Sign in</button>
+</div>
+<div class="head">
+  <div class="row">
+    <h1 class="brand" id="brand" aria-label="Nova"><span>N</span><span>o</span><span>v</span><span>a</span></h1>
+    <form class="bar" id="form" role="search">
+      <input id="q" type="search" placeholder="Search the web" autocomplete="off" aria-label="Search">
+      <button type="submit">Search</button>
+    </form>
+  </div>
+  <div class="tabs" id="tabs" role="tablist"></div>
+</div>
+<main id="out" aria-live="polite"></main>
+
+<dialog id="keyDlg">
+  <strong>Access</strong>
+  <p class="meta">Friends: enter the access code you were given.</p>
+  <input id="codeIn" type="password" placeholder="Access code" autocomplete="off">
+  <p class="meta">Owner only: your own Serper key.</p>
+  <input id="keyIn" type="password" placeholder="Serper key (optional)" autocomplete="off">
+  <div class="acts"><button class="chip" id="keyCancel">Cancel</button><button class="chip main" id="keySave">Save</button></div>
+</dialog>
+<div id="toast" role="status"></div>
+
+<script>
+// Firebase sign-in: paste your config here later to turn on the Sign in button.
+const FIREBASE_CONFIG = null;
+
+const TABS = [["web","Web"],["videos","Videos"],["news","News"],["images","Images"],["shopping","Shopping"],["maps","Maps"],["books","Books"]];
+const SERPER = {web:"search",videos:"videos",news:"news",images:"images",shopping:"shopping",maps:"maps"};
+let tab = "web", query = "";
+const $ = id => document.getElementById(id);
+
+function store(k, v){
+  try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; }
+}
+function esc(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function safe(u){ return /^https?:\/\//i.test(u || "") ? esc(u) : "#"; }
+function toast(t){ const el = $("toast"); el.textContent = t; el.classList.add("on"); setTimeout(() => el.classList.remove("on"), 2600); }
+
+// Theme
+const saved = store("nova-theme");
+if (saved) document.documentElement.dataset.theme = saved;
+$("themeBtn").onclick = () => {
+  const dark = document.documentElement.dataset.theme
+    ? document.documentElement.dataset.theme === "dark"
+    : matchMedia("(prefers-color-scheme: dark)").matches;
+  const next = dark ? "light" : "dark";
+  document.documentElement.dataset.theme = next;
+  store("nova-theme", next);
+};
+
+// Tabs
+function drawTabs(){
+  $("tabs").innerHTML = TABS.map(([id, label]) =>
+    `<button role="tab" data-id="${id}" aria-selected="${id === tab}">${label}</button>`).join("");
+}
+$("tabs").onclick = e => {
+  const b = e.target.closest("button"); if (!b) return;
+  tab = b.dataset.id; drawTabs();
+  if (query) run();
+};
+
+// Search key
+$("keyBtn").onclick = () => { $("keyIn").value = store("nova-key") || ""; $("codeIn").value = store("nova-code") || ""; $("keyDlg").showModal(); };
+$("keyCancel").onclick = () => $("keyDlg").close();
+$("keySave").onclick = () => { store("nova-key", $("keyIn").value.trim()); store("nova-code", $("codeIn").value.trim()); $("keyDlg").close(); toast("Saved"); if (query) run(); };
+
+// Sign in
+$("signBtn").onclick = () => toast(FIREBASE_CONFIG ? "Sign in is loading" : "Sign in turns on once Firebase is connected");
+
+// Home and search
+$("brand").onclick = () => { query = ""; $("q").value = ""; document.body.classList.add("home"); $("out").innerHTML = ""; };
+$("form").onsubmit = e => { e.preventDefault(); const v = $("q").value.trim(); if (v) { query = v; run(); } };
+
+function bump(){
+  const day = new Date().toDateString(); let n = 0;
+  try { const o = JSON.parse(store("nova-count") || "{}"); n = o.day === day ? o.n : 0; } catch (e) {}
+  if (n >= 40) return false;
+  store("nova-count", JSON.stringify({ day, n: n + 1 })); return true;
+}
+async function serper(kind){
+  if (!bump()) return { limit: true };
+  try {
+    const rr = await fetch("/.netlify/functions/search", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ kind: SERPER[kind], q: query, code: store("nova-code") || "" }) });
+    if (rr.status === 401) return { need: true };
+    if (rr.ok) return rr.json();
+  } catch (e) {}
+  const key = store("nova-key");
+  if (!key) return { need: true };
+  const r = await fetch("https://google.serper.dev/" + SERPER[kind], {
+    method: "POST",
+    headers: { "X-API-KEY": key, "Content-Type": "application/json" },
+    body: JSON.stringify({ q: query, num: 20 })
+  });
+  if (!r.ok) throw new Error("Serper answered " + r.status);
+  return r.json();
+}
+
+const R = {
+  web: d => (d.organic || []).map(x =>
+    `<div class="res"><div class="u">${esc(x.link)}</div><a class="t" href="${safe(x.link)}" target="_blank" rel="noopener">${esc(x.title)}</a><p>${esc(x.snippet)}</p></div>`),
+  videos: d => (d.videos || []).map(x =>
+    `<div class="item"><img src="${safe(x.imageUrl)}" alt="" loading="lazy"><div class="res"><a class="t" href="${safe(x.link)}" target="_blank" rel="noopener">${esc(x.title)}</a><div class="u">${esc([x.channel, x.duration].filter(Boolean).join(", "))}</div></div></div>`),
+  news: d => (d.news || []).map(x =>
+    `<div class="item">${x.imageUrl ? `<img src="${safe(x.imageUrl)}" alt="" loading="lazy">` : ""}<div class="res"><div class="u">${esc([x.source, x.date].filter(Boolean).join(", "))}</div><a class="t" href="${safe(x.link)}" target="_blank" rel="noopener">${esc(x.title)}</a><p>${esc(x.snippet)}</p></div></div>`),
+  images: d => (d.images || []).map(x =>
+    `<a class="card" href="${safe(x.link || x.imageUrl)}" target="_blank" rel="noopener"><img src="${safe(x.imageUrl)}" alt="${esc(x.title)}" loading="lazy"><div><small>${esc(x.source)}</small></div></a>`),
+  shopping: d => (d.shopping || []).map(x =>
+    `<a class="card" href="${safe(x.link)}" target="_blank" rel="noopener"><img src="${safe(x.imageUrl)}" alt="" loading="lazy"><div>${esc(x.title)}<small>${esc([x.price, x.source].filter(Boolean).join(", "))}</small></div></a>`),
+  maps: d => (d.places || []).map(x => {
+    const link = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent((x.title || "") + " " + (x.address || ""));
+    return `<div class="res"><a class="t" href="${esc(link)}" target="_blank" rel="noopener">${esc(x.title)}</a><div class="u">${esc(x.address)}</div><p>${x.rating ? esc(x.rating) + " stars" : ""}</p></div>`;
+  })
+};
+const GRID = { images: 1, shopping: 1 };
+
+async function books(){
+  const r = await fetch("https://openlibrary.org/search.json?limit=16&fields=key,title,author_name,first_publish_year,cover_i&q=" + encodeURIComponent(query));
+  const d = await r.json();
+  return (d.docs || []).map(x =>
+    `<div class="item">${x.cover_i ? `<img src="https://covers.openlibrary.org/b/id/${encodeURIComponent(x.cover_i)}-M.jpg" alt="" loading="lazy">` : ""}<div class="res"><a class="t" href="https://openlibrary.org${esc(x.key)}" target="_blank" rel="noopener">${esc(x.title)}</a><div class="u">${esc([(x.author_name || [])[0], x.first_publish_year].filter(Boolean).join(", "))}</div></div></div>`);
+}
+
+async function run(){
+  document.body.classList.remove("home");
+  const out = $("out");
+  out.innerHTML = '<p class="meta">Searching...</p>';
+  try {
+    let rows;
+    if (tab === "books") rows = await books();
+    else {
+      const d = await serper(tab);
+      if (d.limit) { out.innerHTML = '<div class="msg"><strong>Daily limit reached</strong><p class="meta">You have used today\'s 40 searches. Come back tomorrow.</p></div>'; return; }
+      if (d.need) { out.innerHTML = '<div class="msg"><strong>Enter your access code</strong><p class="meta">Tap Access at the top and enter the code you were given.</p></div>'; return; }
+      rows = R[tab](d);
+    }
+    if (!rows.length) { out.innerHTML = '<div class="msg">No results for "' + esc(query) + '". Try different words.</div>'; return; }
+    out.innerHTML = `<p class="meta">Results for "${esc(query)}"</p>` + (GRID[tab] ? `<div class="grid">${rows.join("")}</div>` : rows.join(""));
+  } catch (err) {
+    out.innerHTML = '<div class="msg"><strong>Search failed</strong><p class="meta">' + esc(err.message) + '. Check your internet and your key, then try again.</p></div>';
+  }
+}
+
+(function(){const d=new Date(),day=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+  document.documentElement.style.setProperty('--photo','url(https://picsum.photos/seed/nova-'+day+'/1920/1080)');})();
+drawTabs();
+</script>
+</body>
+</html>
